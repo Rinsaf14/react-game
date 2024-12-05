@@ -1,23 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import Start from "./pages/Start";
+import Question from "./pages/Question";
+import Score from "./pages/Score";
+import Review from "./pages/Review";
 
 function App() {
+  const [display, setDisplay] = useState("start");
+  const [index, setIndex] = useState(0);
+  const [answer, setAnswer] = useState({});
+  const [score, setScore] = useState({});
+  const handlePrev = () => {
+    setIndex((index) => index - 1);
+  };
+  const handleNext = () => {
+    setIndex((index) => index + 1);
+  };
+  const handleReset = () => {
+    setIndex(0)
+    setAnswer({})
+    setDisplay("start")
+    setScore({})
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="h-screen flex flex-col">
+      <Header display={display} />
+      <div className="w-full bg-violet flex-1">
+        {display === "start" && <Start setDisplay={setDisplay} />}
+        {display === "question" && (
+          <Question
+            setScore={setScore}
+            index={index}
+            handleNext={handleNext}
+            handlePrev={handlePrev}
+            answer={answer}
+            setAnswer={setAnswer}
+            setDisplay={setDisplay}
+          />
+        )}
+        {display === "score" && (
+          <Score score={score} setDisplay={setDisplay} setIndex={setIndex} />
+        )}
+        {display === "review" && (
+          <Review
+            index={index}
+            answer={answer}
+            setDisplay={setDisplay}
+            handleNext={handleNext}
+            handlePrev={handlePrev}
+          />
+        )}
+      </div>
+      <Footer handleReset={handleReset}/>
     </div>
   );
 }
